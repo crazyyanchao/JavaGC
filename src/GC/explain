@@ -1,0 +1,29 @@
+编写一个Java应用，在while(true)循环中每隔5秒new一个长度为1024的byte数组。
+
+1.用jstat gcutil观察java进程执行时各代的变化情况（答案中贴出过程图片）。
+jstat -gcutil 21891 250 7
+21891 进程号； 250ms 采样interval； 7 count
+
+2.用jmap导出java进程的heap，并用jhat观察内存占用排序（用web访问jhat服务，贴出排序图）。
+-1、使用ps -aux| grep xxx 获取要分析的java进程
+-2、jmap -dump:live,format=b,file=jmap.dat xxx(进程ID号)
+用jmap得到进程的运行时内存镜像
+-3、jhat -J-Xmx1g jamp.dat
+用jhat进行内存分析，指定jhat使用的内存为1g
+-4、jhat启动后会建立一个http server 端口为7000，之后可以通过
+
+3.分别使用parallelOldGC及CMS执行程序，打印gc log。（贴出两种不同的GC log）。
+配置ParallelGC ：
+-XX:+UseParallelOldGC
+配置CMS：
+-XX:+UseConcMarkSweepGC
+打印GC日志：
+-verbose:gc -XX:+PrintGCTimeStamps -XX:+PrintGCDetails -Xloggc: GC.log
+
+Java -verbose:gc 中参数-verbose:gc 表示输出虚拟机中GC的详细情况
+-verbose:gc 等同于-XX:+PrintGC，都是打印GC的简要信息。
+cat GC.log
+使用UseParallelOldGC的情况：
+这里写图片描述
+使用 UseConcMarkSweepGC的情况：
+这里写图片描述
